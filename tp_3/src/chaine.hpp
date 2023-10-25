@@ -10,7 +10,10 @@
 /*                                déclarations                                */
 /******************************************************************************/
 
-/* déclaration des templates du plus général au plus spécifique. */
+/* Déclaration des templates du plus général au plus spécifique. On doit avoir
+ * ces déclarations pour permettre à `chaine(T... args)` d'appeler la fonction
+ * `chaine(const std::tuple<Args...> &t)` qui est définie après pour pouvoir
+ * afficher les tuples imbriqués. */
 template<typename T> std::string chaine(T e);
 template<typename ...T> std::string chaine(T... args);
 template<typename ...Args> std::string chaine(const std::tuple<Args...> &t);
@@ -27,6 +30,8 @@ std::string chaine(int i);
 /******************************************************************************/
 
 struct ExceptionChaine: std::exception {
+    /* ici, on a que le constructeur qui est template. Il prend l'objet sur
+     * lequel on peut appliquer l'opérateur typeid(instance_obj). */
     template<typename T>
     ExceptionChaine(T value) : std::exception() {
         std::ostringstream oss;
@@ -47,6 +52,8 @@ struct ExceptionChaine: std::exception {
 /*                               generic chaine                               */
 /******************************************************************************/
 
+/* Méthode de base qui permet de renvoyer une exception pour les types inconnus
+ * que l'on ne peut pas convertir en chaine.*/
 template<typename T>
 std::string chaine(T e) {
     throw ExceptionChaine(e);
@@ -104,14 +111,18 @@ std::string chaine(T... args) {
 /*                                   tuples                                   */
 /******************************************************************************/
 
-template<typename T, size_t... Is>
-std::string chaine(const T& t, std::index_sequence<Is...>) {
-    return chaine(std::get<Is>(t)...);
-}
-
+/* On prend un tuple en paramètre et on génère la séquence des indexes des
+ * éléments du tuple. */
 template<typename ...Args>
 std::string chaine(const std::tuple<Args...> &t) {
     return chaine(t, std::make_index_sequence<sizeof...(Args)>());
+}
+
+/* On utilise une fold expression sur le tuple avec la séquence des indexes pour
+ * pouvoir appeler la fonction `chaine(T... t)`. */
+template<typename T, size_t... Is>
+std::string chaine(const T& t, std::index_sequence<Is...>) {
+    return chaine(std::get<Is>(t)...);
 }
 
 #endif

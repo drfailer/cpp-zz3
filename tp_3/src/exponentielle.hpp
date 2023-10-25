@@ -11,6 +11,9 @@ struct Exponentielle {
     }
 };
 
+/* NOTE: pour pouvoir déclarer un template spécialisé comme ci-dessous
+ * (`Exponentielle<0>`), il faut que le template "générique" ait été défini au
+ * préalable. */
 template<>
 struct Exponentielle<0> {
     static const double valeur(double x) {
