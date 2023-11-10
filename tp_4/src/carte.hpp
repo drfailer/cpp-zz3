@@ -3,15 +3,15 @@
 
 class Carte
 {
-    public:
-        // friendship + forward declaration
-        friend class UsineCarte;
-        unsigned getValeur() const { return valeur; }
-        ~Carte() {
-            compteur--;
-        }
+public:
+    // friendship + forward declaration
+    friend class UsineCarte;
+    unsigned getValeur() const { return valeur; }
+    ~Carte() {
+        compteur--;
+    }
 
-        static int getCompteur() { return compteur; }
+    static int getCompteur() { return compteur; }
 
     // suppréssion du constructeur de copie / operateur d'affectation
     Carte(const Carte&) = delete;
