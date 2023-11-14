@@ -113,4 +113,19 @@ private:
     std::multimap<Classe, Valeur> valeurs;
 };
 
+template<typename T>
+std::ostream& operator<<(std::ostream& os, Histogramme<T> hist) {
+    for (const Classe& c : hist.getClasses()) {
+        auto interval = hist.getValeurs(c);
+
+        os << "[" << c.getBorneInf() << ", " << c.getBorneSup() << "]:";
+        for (auto it = interval.first; it != interval.second; ++it) {
+            os << "(" << it->second.getEtudiant() << "," << it->second.getNote() << ") ";
+        }
+        os << std::endl;
+    }
+
+    return os;
+}
+
 #endif
