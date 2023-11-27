@@ -63,12 +63,15 @@ std::string chaine(T e) {
 /*                              chain variadique                              */
 /******************************************************************************/
 
-/* #define LAMBDA_VERSION */
+/* #define OPERATOR_COMMA */
 /* #define STREAM_VERSION */
-#if defined(LAMBDA_VERSION)
+#if defined(OPERATOR_COMMA)
 /*
- * Version où l'on utilise un lambda pour itérer sur les paramères. La syntaxe
- * est la suivante:
+ * Version avec l'opérateur ,. La syntaxe est la suivante:
+ *
+ * ((utilisation de args comme paramètre courant), ... )
+ *
+ * Quand on a plusieur instruction à exécuter on peut utiliser cette syntaxe:
  *
  * ([&] { utilisation de args comme paramètre courant }(), ... )
  */
@@ -76,8 +79,6 @@ template<typename ...T>
 std::string chaine(T... args) {
     std::ostringstream oss;
 
-    /* on utilise un lambda pour itérer sur les arguements.
-     * IMPORTAN: les {} sont bient avant les (). */
     ([&] {
      oss << chaine(args) << " ";
      }(), ...);
