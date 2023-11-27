@@ -8,6 +8,10 @@
 #include <iostream>
 #include <set>
 
+/******************************************************************************/
+/*                                    Hist                                    */
+/******************************************************************************/
+
 class Histo
 {
     public:
@@ -41,6 +45,14 @@ private:
     std::vector<Classe> classes;
 };
 
+/******************************************************************************/
+/*                                    Comp                                    */
+/******************************************************************************/
+
+/* Utilisé avec la fonction std::equal_range
+ * Important: les opérateurs ne sont pas commutatifs, il faut donc fournir les
+ *            deux versions.
+ */
 struct Comp {
     bool operator()(const std::pair<Classe, Valeur>& lhs, const Classe& rhs) {
         return lhs.first < rhs;
@@ -49,6 +61,10 @@ struct Comp {
         return lhs < rhs.first;
     }
 };
+
+/******************************************************************************/
+/*                                Histogramme                                 */
+/******************************************************************************/
 
 template<class Comparator = std::less<Classe>>
 class Histogramme
@@ -63,26 +79,16 @@ public:
 
     /* majouter ***************************************************************/
     void ajouter(double v) {
-        auto it = std::find_if(classes.begin(), classes.end(),
-                [v](const Classe& c) { return c.contains(v); });
+        iterator it = ajouter_(v);
         if (it != classes.end()) {
-            Classe updated = *it;
-            classes.erase(it);
-            updated.ajouter();
-            classes.insert(updated);
             valeurs.insert(std::make_pair(*it, Valeur(v)));
         }
     }
 
     void ajouter(Echantillon e) {
         for (Valeur v : e) {
-            auto it = std::find_if(classes.begin(), classes.end(),
-                    [v](const Classe& c) { return c.contains(v); });
+            iterator it = ajouter_(v.getNombre());
             if (it != classes.end()) {
-                Classe updated = *it;
-                classes.erase(it);
-                updated.ajouter();
-                classes.insert(updated);
                 valeurs.insert(std::make_pair(*it, v));
             }
         }
@@ -111,7 +117,25 @@ public:
 private:
     std::set<Classe, Comparator> classes;
     std::multimap<Classe, Valeur> valeurs;
+
+    /* fonction utilitaire pour l'ajout ***************************************/
+    using iterator = std::set<Classe>::iterator;
+    iterator ajouter_(double v) {
+        auto it = std::find_if(classes.begin(), classes.end(),
+                [v](const Classe& c) { return c.contains(v); });
+        if (it != classes.end()) {
+            Classe updated = *it;
+            classes.erase(it);
+            updated.ajouter();
+            classes.insert(updated);
+        }
+        return it;
+    }
 };
+
+/******************************************************************************/
+/*                        affichage de l'histogramme                          */
+/******************************************************************************/
 
 template<typename T>
 std::ostream& operator<<(std::ostream& os, Histogramme<T> hist) {
