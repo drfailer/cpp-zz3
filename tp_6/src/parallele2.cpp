@@ -11,7 +11,6 @@
 /*                              global variables                              */
 /******************************************************************************/
 
-unsigned compteur = 0;
 std::mutex mutex;
 
 /******************************************************************************/
@@ -64,12 +63,15 @@ int main() {
     std::vector<Nombre> f(taille);
     std::vector<Nombre> g(taille);
 
-    for_par(4, 0, taille, { std::lock_guard<std::mutex> lock(mutex); a[i] = ++compteur; });
-    for_par(4, 0, taille, { std::lock_guard<std::mutex> lock(mutex); b[i] = ++compteur; });
-    for_par(4, 0, taille, { std::lock_guard<std::mutex> lock(mutex); c[i] = ++compteur; });
-    for_par(4, 0, taille, { std::lock_guard<std::mutex> lock(mutex); d[i] = ++compteur; });
-    for_par(4, 0, taille, { std::lock_guard<std::mutex> lock(mutex); e[i] = ++compteur; });
-    for_par(4, 0, taille, { std::lock_guard<std::mutex> lock(mutex); f[i] = ++compteur; });
+    // NOTE: comme expliqué dans l'exercice précédent, on ne peut pas utiliser
+    // la parallélisation ici avec le compteur global, on est obliger d'utiliser
+    // i et la taille
+    for_par(4, 0, taille, { a[i] = i + 1; });
+    for_par(4, 0, taille, { b[i] = i + 1 + taille; });
+    for_par(4, 0, taille, { c[i] = i + 1 + 2*taille; });
+    for_par(4, 0, taille, { d[i] = i + 1 + 3*taille; });
+    for_par(4, 0, taille, { e[i] = i + 1 + 4*taille; });
+    for_par(4, 0, taille, { f[i] = i + 1 + 5*taille; });
 
     std::cout << "a = " << a << std::endl;
     std::cout << "b = " << b << std::endl;
@@ -77,7 +79,6 @@ int main() {
     std::cout << "d = " << d << std::endl;
     std::cout << "e = " << e << std::endl;
     std::cout << "f = " << f << std::endl;
-    std::cout << "compteur = " << compteur << std::endl;
 
     /* test du calcul avec le for sequentiel et parallèle */
 

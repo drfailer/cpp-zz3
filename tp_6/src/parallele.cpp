@@ -109,6 +109,24 @@ int main() {
     /* for_par(4, 0, taille, a[i] = ++compteur); */
     /* for_par(4, 0, taille, b[i] = ++compteur); */
 
+    /* WARNING:
+     *
+     * Je suppose que ce qui est attendu est quelque chose de similaire à ce
+     * qui est fait ci-dessous. Si ça ne marche pas c'est tout à fait normal et
+     * en l'état je ne voix pas comment faire pour utiliser la fonction
+     * `for_parallele` pour générer les tableau avec le compteur. Le problème de
+     * l'utilisation du compteur global ici est qu'il force à faire les choses
+     * de façon séquentielle, dans le cas contraire, les tableaux n'ont pas
+     * forcement les bonnes valeurs.
+     *
+     * À noter qu'il est possible d'ajouter des mutex dans la fontion
+     * `for_parallele` pour habilement la transformer en un `for_sequentiel`
+     * inutilement complexe mais je doute que cela soit la solution.
+     *
+     * NOTE: il y a une solution possible (sans avoir besoin de mutex et de
+     * compteur global) présentée dans le fichier `parallele2.cpp`.
+     */
+
     /* utilisation directe du mutex (déconseillée) */
     for_par(4, 0, taille, {
         mutex.lock();
