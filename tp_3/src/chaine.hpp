@@ -63,17 +63,20 @@ std::string chaine(T e) {
 /*                              chain variadique                              */
 /******************************************************************************/
 
-/* #define OPERATOR_COMMA */
+#define LAMBDA_VERSION
 /* #define STREAM_VERSION */
-#if defined(OPERATOR_COMMA)
+#if defined(LAMBDA_VERSION)
 /*
- * Version avec l'opérateur ,. La syntaxe est la suivante:
- *
- * ((utilisation de args comme paramètre courant), ... )
- *
- * Quand on a plusieur instruction à exécuter on peut utiliser cette syntaxe:
+ * Version où l'on utilise un lambda pour itérer sur les paramères. La syntaxe
+ * est la suivante:
  *
  * ([&] { utilisation de args comme paramètre courant }(), ... )
+ *
+ * NOTE1: l'opérateur binaire utilisé ici est l'opérateur ,
+ * NOTE2: on est pas obliger de mettre les () lorsque les lambda ne prennent pas
+ *        de pramètre.
+ * NOTE3: attention, ici, il faut bien appeler la fonction générée par la
+ *        lambda, d'où les () après }.
  */
 template<typename ...T>
 std::string chaine(T... args) {
